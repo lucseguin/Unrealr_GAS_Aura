@@ -4,6 +4,8 @@ Intermediate
 Saved
 Build
 
+.DS_Store
+.idea
 .vscode
 .VS
 *.VC.db
@@ -11,6 +13,7 @@ Build
 *.opendb
 *.sdf
 *.suo
+*.sln
 *.xcodeproj
 *.xcworkspace
 
