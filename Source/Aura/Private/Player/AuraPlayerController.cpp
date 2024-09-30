@@ -4,10 +4,18 @@
 #include "Player/AuraPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Interaction/EnemyInterface.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
 	bReplicates = true;
+}
+
+void AAuraPlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	CursorTrace();
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -50,5 +58,56 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 	{
 		ControlledPawn->AddMovementInput(ForwardDirection, InputAxisVector.Y);
 		ControlledPawn->AddMovementInput(RightVector, InputAxisVector.X);
+	}
+}
+
+void AAuraPlayerController::CursorTrace()
+{
+	FHitResult CursoHit;
+	GetHitResultUnderCursor(ECC_Visibility, false, CursoHit);
+	if(CursoHit.bBlockingHit)
+	{
+		LastActor = CurrentActor;
+		CurrentActor = CursoHit.GetActor();
+
+		/**
+		 * Line trace from cursor, there are several possible scenarios
+		 * 1. LastActor is null && CurrentActor is null
+		 *	  - Do Nothing
+		 * 2. LastActor is null && CurrentActor is valid
+		 *    - Highlight this actor if itès the first frame it got selected
+		 * 3. LastActor is valid && CurrentActor is null
+		 *    - UnHilight this actor, we are not hovering it anymore
+		 * 4. LastActor and CurrentActor are valid, but they are different
+		 *    - UnHilight LastActor and Highlight CurrentActor
+		 * 5. LastActor and CurrentActor are valid, and are the same
+		 *    - do nothing
+		 */
+
+		if(LastActor == nullptr)
+		{
+			if(CurrentActor != nullptr)
+			{
+				// case 2
+				CurrentActor->HighlightActor();
+			} //else case 1, do nothing
+		}
+		else //LastActor is Valid
+		{
+			if(CurrentActor == nullptr)
+			{
+				//case 3
+				LastActor->UnHighlightActor();
+			}
+			else // both actors are valid
+			{
+				if(LastActor != CurrentActor)
+				{
+					//case 4
+					LastActor->UnHighlightActor();
+					CurrentActor->HighlightActor();
+				} //else case 5 do nothing
+			}
+		}
 	}
 }
