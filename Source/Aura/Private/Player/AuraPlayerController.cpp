@@ -18,12 +18,6 @@ void AAuraPlayerController::Tick(float DeltaTime)
 	CursorTrace();
 }
 
-void AAuraPlayerController::OnRep_PlayerState()
-{
-	Super::OnRep_PlayerState();
-	//GetPlayerState<AAuraPlayerState>()
-}
-
 void AAuraPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
