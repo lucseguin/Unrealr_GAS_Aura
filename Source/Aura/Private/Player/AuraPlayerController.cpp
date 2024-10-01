@@ -5,7 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Interaction/EnemyInterface.h"
-
+#include "Player/AuraPlayerState.h"
 AAuraPlayerController::AAuraPlayerController()
 {
 	bReplicates = true;
@@ -16,6 +16,12 @@ void AAuraPlayerController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	CursorTrace();
+}
+
+void AAuraPlayerController::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	//GetPlayerState<AAuraPlayerState>()
 }
 
 void AAuraPlayerController::BeginPlay()
